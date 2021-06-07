@@ -1,30 +1,3 @@
-function getRandomInteger(from, to) {
-  if (from < to) {
-    return Math.floor(Math.random() * (to - from + 1)) + from;
-  } else {
-    return Math.floor(Math.random() * (from - to + 1)) + to;
-  }
-}
-getRandomInteger(1, 10);
-
-function getRandomFloat(from, to, decimals) {
-  if (from < to) {
-    return Number((Math.random() * (to - from) + from).toFixed(decimals));
-  } else {
-    return Number((Math.random() * (from - to) + to).toFixed(decimals));
-  }
-}
-getRandomFloat(1.432, 10.21, 3);
-
-function getRandomArrayElement (elements) {
-  return elements[getRandomInteger(0, elements.length - 1)];
-}
-
-// Filter function for removing duplicates is taken from here - https://dev.to/kannndev/filter-an-array-for-unique-values-in-javascript-1ion
-function getUniqueValues(array) {
-  return Array.from(new Set(array));
-}
-
 const TITLES = [
   'Большая квартира',
   'Маленькая квартира',
@@ -63,16 +36,43 @@ const PHOTOS = [
   'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/claire-rendall-b6kAwr1i0Iw.jpg',
 ];
 
-function randomFeatures () {
+const ADVERT_DATA_COUNT = 10;
+
+function getRandomInteger(from, to) {
+  if (from < to) {
+    return Math.floor(Math.random() * (to - from + 1)) + from;
+  } else {
+    return Math.floor(Math.random() * (from - to + 1)) + to;
+  }
+}
+
+function getRandomFloat(from, to, decimals) {
+  if (from < to) {
+    return Number((Math.random() * (to - from) + from).toFixed(decimals));
+  } else {
+    return Number((Math.random() * (from - to) + to).toFixed(decimals));
+  }
+}
+
+function getRandomArrayElement(elements) {
+  return elements[getRandomInteger(0, elements.length - 1)];
+}
+
+// Filter function for removing duplicates is taken from here - https://dev.to/kannndev/filter-an-array-for-unique-values-in-javascript-1ion
+function getUniqueValues(array) {
+  return Array.from(new Set(array));
+}
+
+function getRandomFeatures() {
   return new Array(getRandomInteger(0, FEATURES.length))
     .fill('')
     .map(() => getRandomArrayElement(FEATURES));
 }
 
 const createAuthor = () => {
-  const xx = `0${getRandomInteger(1, 8).toString()}`;
+  const randomInteger = `0${getRandomInteger(1, 8)}`;
   const author = {};
-  author.avatar = `img/avatars/user${xx}.png`;
+  author.avatar = `img/avatars/user${randomInteger}.png`;
   return author;
 };
 
@@ -85,19 +85,17 @@ const randomPhotos = new Array(getRandomInteger(0, PHOTOS.length))
   .fill('')
   .map(() => getRandomArrayElement(PHOTOS));
 
-const currentLocation = createLocation();
-
 const createOffer = () => {
   const offer = {};
   offer.title = getRandomArrayElement(TITLES);
-  offer.address = `${currentLocation.lat.toString()  }, ${  currentLocation.lng.toString()}`;
+  offer.address = `${createLocation().lat}, ${createLocation().lng}`;
   offer.price = getRandomInteger(100, 100000);
   offer.type = getRandomArrayElement(TYPES);
   offer.rooms = getRandomInteger(1, 10);
   offer.guests = getRandomInteger(1, 10);
   offer.checkin = getRandomArrayElement(CHECKINANDOUT);
   offer.checkout = getRandomArrayElement(CHECKINANDOUT);
-  offer.features = getUniqueValues(randomFeatures());
+  offer.features = getUniqueValues(getRandomFeatures());
   offer.description = getRandomArrayElement(DESCRIPTIONS);
   offer.photos = randomPhotos;
   return offer;
@@ -107,16 +105,12 @@ const createAdvert = () => {
   const advert = {};
   advert.author = createAuthor();
   advert.offer = createOffer();
-  advert.location = currentLocation;
+  advert.location = createLocation();
   return advert;
 };
 
-const ADVERT_DATA_COUNT = 10;
-
-const advertData = function() {
-  return new Array(ADVERT_DATA_COUNT)
-    .fill(null)
-    .map(() => createAdvert());
+const advertData = function () {
+  return new Array(ADVERT_DATA_COUNT).fill(null).map(() => createAdvert());
 };
 
 advertData();
