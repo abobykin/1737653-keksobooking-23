@@ -1,5 +1,5 @@
-import { getTemporaryData } from './data/get-temporary-data.js';
+import { setFormDisabled, setFormEnabled } from './utils/app-state.js';
 
-const ADVERT_DATA_COUNT = 10;
+setFormDisabled();
+setTimeout(setFormEnabled, 9000);
 
-getTemporaryData(ADVERT_DATA_COUNT);
