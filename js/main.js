@@ -1,5 +1,5 @@
-import { getTemporaryData } from './data/get-temporary-data.js';
+import { popupFragment } from './utils/generate-markup.js';
 
-const ADVERT_DATA_COUNT = 10;
-
-getTemporaryData(ADVERT_DATA_COUNT);
+const mapCanvas = document.querySelector('#map-canvas');
+mapCanvas.style.display = 'flex';
+mapCanvas.appendChild(popupFragment);
