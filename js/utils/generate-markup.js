@@ -69,8 +69,8 @@ dataForCards.forEach((advert) => {
       img.src = url;
       return img;
     };
-    for (let i = 0; i < advert.offer.photos.length; i++) {
-      const images = addImgSource(advert.offer.photos[i]);
+    for (const photo in advert.offer.photos) {
+      const images = addImgSource(advert.offer.photos[photo]);
       cardImg.remove();
       cardPhotos.appendChild(images);
     }
