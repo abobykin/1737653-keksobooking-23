@@ -20,44 +20,69 @@ dataForCards.forEach((advert) => {
   const cardPhotos = popupCard.querySelector('.popup__photos');
   const cardImg = cardPhotos.querySelector('img');
   const cardAvatar = popupCard.querySelector('.popup__avatar');
+  const offerTypeDictionary = {
+    flat: 'Квартира',
+    bungalow: 'Бунгало',
+    house: 'Дом',
+    palace: 'Дворец',
+    hotel: 'Отель',
+  };
+
   if (advert.author.avatar) {
     cardAvatar.src = advert.author.avatar;
-  } else { cardAvatar.style.display = 'none'; }
+  } else {
+    cardAvatar.style.display = 'none';
+  }
+
   if (advert.offer.title) {
     title.textContent = advert.offer.title;
-  } else { title.style.display = 'none'; }
+  } else {
+    title.style.display = 'none';
+  }
+
   if (advert.offer.address) {
     address.textContent = advert.offer.address;
-  } else { address.style.display = 'none'; }
+  } else {
+    address.style.display = 'none';
+  }
+
   if (advert.offer.price) {
     price.textContent = `${advert.offer.price} ₽/ночь`;
-  } else { price.style.display = 'none'; }
-  if (advert.offer.type === 'flat') {
-    offerType.textContent = 'Квартира';
-  } else if (advert.offer.type === 'bungalow') {
-    offerType.textContent = 'Бунгало';
-  } else if (advert.offer.type === 'house') {
-    offerType.textContent = 'Дом';
-  } else if (advert.offer.type === 'palace') {
-    offerType.textContent = 'Дворец';
-  } else if (advert.offer.type === 'hotel') {
-    offerType.textContent = 'Отель';
-  } else { offerType.style.display = 'none'; }
+  } else {
+    price.style.display = 'none';
+  }
+
+  if (advert.offer.type) {
+    offerType.textContent = offerTypeDictionary[advert.offer.type];
+  } else {
+    offerType.style.display = 'none';
+  }
+
   if (advert.offer.rooms && advert.offer.guests) {
     roomsForGuests.textContent
     = `${advert.offer.rooms} комнаты для ${advert.offer.guests} гостей`;
-  } else { roomsForGuests.style.display = 'none'; }
+  } else {
+    roomsForGuests.style.display = 'none';
+  }
+
   if (advert.offer.checkin && advert.offer.checkout) {
     checkTime.textContent
     = `Заезд после ${advert.offer.checkin}, выезд до ${advert.offer.checkout}`;
-  } else { checkTime.style.display = 'none'; }
+  } else {
+    checkTime.style.display = 'none';
+  }
+
   if (advert.offer.features !== [] || advert.offer.features !== undefined) {
     features.textContent = advert.offer.features.join(', ');
-  } else { features.style.display = 'none'; }
+  } else {
+    features.style.display = 'none';
+  }
+
   if (advert.offer.description) {
     description.textContent = advert.offer.description;
-  } else { description.style.display = 'none'; }
-
+  } else {
+    description.style.display = 'none';
+  }
 
   if (advert.offer.photos.length !== 0) {
     const createImg = function() {
