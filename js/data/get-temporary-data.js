@@ -27,9 +27,12 @@ const FEATURES = [
 ];
 
 const DESCRIPTIONS = [
-  'no place like home',
-  'yankee go home',
-  'if ifs and buts were candies and nuts',
+  'There is no place like home',
+  'Still waters run deep',
+  'If ifs and buts were candies and nuts',
+  'A penny saved is a penny earned',
+  'East or West — home is best',
+  'The grass is always greener on the other side',
 ];
 
 const PHOTOS = [
@@ -65,9 +68,11 @@ const createLocation = () => ({
   lng: getRandomFloat(139.7, 139.8, 5),
 });
 
-const randomPhotos = new Array(getRandomInteger(0, PHOTOS.length))
-  .fill('')
-  .map(() => getRandomArrayElement(PHOTOS));
+const randomPhotos = function () {
+  return new Array(getRandomInteger(0, PHOTOS.length))
+    .fill('')
+    .map(() => getRandomArrayElement(PHOTOS));
+};
 
 const createOffer = () => {
   const offer = {};
@@ -81,7 +86,7 @@ const createOffer = () => {
   offer.checkout = getRandomArrayElement(CHECKINANDOUT);
   offer.features = getUniqueValues(getRandomFeatures());
   offer.description = getRandomArrayElement(DESCRIPTIONS);
-  offer.photos = randomPhotos;
+  offer.photos = randomPhotos();
   return offer;
 };
 
