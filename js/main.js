@@ -1,13 +1,8 @@
-import { popupFragment } from './utils/generate-markup.js';
 import { setFormDisabled, setFormEnabled } from './utils/app-state.js';
-
-const mapCanvas = document.querySelector('#map-canvas');
+import { validateAdvertForm } from './utils/validation.js';
 
 setFormDisabled();
-setTimeout(setFormEnabled, 9000);
+setTimeout(setFormEnabled, 1000);
 
-// ЗАМЕТКА: Ниже временное решение для того чтобы удобнее видеть на карте несколько объявлений
-// для задания 'Отрисуй меня полностью (часть 1)' (вместо console.log)
-mapCanvas.style.display = 'flex';
+validateAdvertForm();
 
-mapCanvas.appendChild(popupFragment);
