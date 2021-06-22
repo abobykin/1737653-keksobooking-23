@@ -1,11 +1,10 @@
 // Валидации всех полей формы (пока не всех :) )
-const MIN_TITLE_LENGTH = 30;
-const MAX_TITLE_LENGTH = 100;
-const MAX_PRICE = 1000000;
-
 const advertForm = document.querySelector('.ad-form');
 const inputForTitle = advertForm.querySelector('#title');
+const minTitleLength = inputForTitle.getAttribute('minLength');
+const maxTitleLength = inputForTitle.getAttribute('maxLength');
 const inputForPrice = advertForm.querySelector('#price');
+const maxPrice = inputForPrice.getAttribute('max');
 const roomNumber = advertForm.querySelector('#room_number');
 const roomCapacity = advertForm.querySelector('#capacity');
 
@@ -13,9 +12,11 @@ const selectRoomNumber = function () {
   const choosenOption = roomNumber.options[roomNumber.selectedIndex].value;
   return choosenOption;
 };
+
 const disableOption = function (index) {
   roomCapacity.options[index].setAttribute('disabled', 'disabled');
 };
+
 const makeOptionSelected = function (index) {
   roomCapacity.options[index].setAttribute('selected', 'selected');
 };
@@ -28,14 +29,13 @@ const clearAttributes = function() {
 };
 
 const validateAdvertForm = function() {
-
   inputForTitle.addEventListener('input', () => {
     const valueLength = inputForTitle.value.length;
 
-    if (valueLength < MIN_TITLE_LENGTH) {
-      inputForTitle.setCustomValidity(`Ещё ${  MIN_TITLE_LENGTH - valueLength } симв.`);
-    } else if (valueLength > MAX_TITLE_LENGTH) {
-      inputForTitle.setCustomValidity(`Удалите лишние ${  valueLength - MAX_TITLE_LENGTH } симв.`);
+    if (valueLength < minTitleLength) {
+      inputForTitle.setCustomValidity(`Ещё ${  minTitleLength - valueLength } симв.`);
+    } else if (valueLength > maxTitleLength) {
+      inputForTitle.setCustomValidity(`Удалите лишние ${  valueLength - maxTitleLength } симв.`);
     } else {
       inputForTitle.setCustomValidity('');
     }
@@ -46,8 +46,8 @@ const validateAdvertForm = function() {
   inputForPrice.addEventListener('input', () => {
     const priceValue = inputForPrice.value;
 
-    if (priceValue > MAX_PRICE) {
-      inputForPrice.setCustomValidity(`Цена на нашем сайте не может быть больше ${MAX_PRICE}`);
+    if (priceValue > maxPrice) {
+      inputForPrice.setCustomValidity(`Цена на нашем сайте не может быть больше ${maxPrice}`);
     } else {
       inputForPrice.setCustomValidity('');
     }
