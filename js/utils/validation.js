@@ -10,6 +10,13 @@ const roomCapacity = advertForm.querySelector('#capacity');
 const residenceType = advertForm.querySelector('#type');
 const timeIn = advertForm.querySelector('#timein');
 const timeOut = advertForm.querySelector('#timeout');
+const residencePrice = {
+  bungalow: 0,
+  flat: 1000,
+  hotel: 3000,
+  house: 5000,
+  palace: 10000,
+};
 
 const selectOption = function (element) {
   const choosenOption = element.options[element.selectedIndex].value;
@@ -90,27 +97,13 @@ const validateAdvertForm = function() {
   });
 
   // валидация цены за ночь в сязке с типом жилья
-  residenceType.addEventListener('change', () => {
+  residenceType.addEventListener('change', (event) => {
     const setPriceAttributes = (value) => {
       inputForPrice.setAttribute('placeholder', value.toString());
       inputForPrice.setAttribute('min', value);
     };
-
-    if (selectOption(residenceType) === 'bungalow') {
-      setPriceAttributes(0);
-    }
-    if (selectOption(residenceType) === 'flat') {
-      setPriceAttributes(1000);
-    }
-    if (selectOption(residenceType) === 'hotel') {
-      setPriceAttributes(3000);
-    }
-    if (selectOption(residenceType) === 'house') {
-      setPriceAttributes(5000);
-    }
-    if (selectOption(residenceType) === 'palace') {
-      setPriceAttributes(10000);
-    }
+    const eventValue = event.target.value;
+    setPriceAttributes(residencePrice[eventValue]);
 
     const newMin = +inputForPrice.getAttribute('min');
     const currentPrice = +inputForPrice.value;
