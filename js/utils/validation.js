@@ -7,28 +7,44 @@ const inputForPrice = advertForm.querySelector('#price');
 const maxPrice = inputForPrice.getAttribute('max');
 const roomNumber = advertForm.querySelector('#room_number');
 const roomCapacity = advertForm.querySelector('#capacity');
+const residenceType = advertForm.querySelector('#type');
+const timeIn = advertForm.querySelector('#timein');
+const timeOut = advertForm.querySelector('#timeout');
+const residencePrice = {
+  bungalow: 0,
+  flat: 1000,
+  hotel: 3000,
+  house: 5000,
+  palace: 10000,
+};
 
-const selectRoomNumber = function () {
-  const choosenOption = roomNumber.options[roomNumber.selectedIndex].value;
+const selectOption = function (element) {
+  const choosenOption = element.options[element.selectedIndex].value;
+  return choosenOption;
+};
+
+const selectOptionText = function (element) {
+  const choosenOption = element.options[element.selectedIndex].textContent;
   return choosenOption;
 };
 
 const disableOption = function (index) {
-  roomCapacity.options[index].setAttribute('disabled', 'disabled');
+  roomCapacity.options[index].setAttribute('disabled', '');
 };
 
-const makeOptionSelected = function (index) {
-  roomCapacity.options[index].setAttribute('selected', 'selected');
+const makeOptionSelected = function (element, index) {
+  element.options[index].setAttribute('selected', '');
 };
 
-const clearAttributes = function() {
-  for (let index = 0; index < roomCapacity.options.length; index++) {
-    roomCapacity.options[index].removeAttribute('selected');
-    roomCapacity.options[index].removeAttribute('disabled');
+const clearAttributes = function(element) {
+  for (let index = 0; index < element.options.length; index++) {
+    element.options[index].removeAttribute('selected');
+    element.options[index].removeAttribute('disabled');
   }
 };
 
 const validateAdvertForm = function() {
+  // валидация длины текста заголовка
   inputForTitle.addEventListener('input', () => {
     const valueLength = inputForTitle.value.length;
 
@@ -43,11 +59,69 @@ const validateAdvertForm = function() {
     inputForTitle.reportValidity();
   });
 
-  inputForPrice.addEventListener('input', () => {
-    const priceValue = inputForPrice.value;
+  // валидация количества гостей в связке с количеством комнат
+  roomNumber.addEventListener('change', () => {
+    clearAttributes(roomCapacity);
+    roomCapacity.setCustomValidity('Изменилось количество гостей');
+    roomCapacity.reportValidity();
+    if (selectOption(roomNumber) === '1') {
+      makeOptionSelected(roomCapacity, 2);
+      disableOption(0);
+      disableOption(1);
+      disableOption(3);
+    }
+    if (selectOption(roomNumber) === '2') {
+      makeOptionSelected(roomCapacity, 1);
+      disableOption(0);
+      disableOption(3);
+    }
+    if (selectOption(roomNumber) === '3') {
+      makeOptionSelected(roomCapacity, 0);
+      disableOption(3);
+    }
+    if (selectOption(roomNumber) === '100') {
+      makeOptionSelected(roomCapacity, 3);
+      disableOption(0);
+      disableOption(1);
+      disableOption(2);
+    }
+  });
 
-    if (priceValue > maxPrice) {
-      inputForPrice.setCustomValidity(`Цена на нашем сайте не может быть больше ${maxPrice}`);
+  // убирает roomCapacity.reportValidity(), вызванное выше.
+  roomCapacity.addEventListener('blur', () => {
+    roomCapacity.setCustomValidity('');
+  });
+
+  roomCapacity.addEventListener('change', () => {
+    roomCapacity.setCustomValidity('');
+  });
+
+  // валидация цены за ночь в сязке с типом жилья
+  residenceType.addEventListener('change', (event) => {
+    const setPriceAttributes = (value) => {
+      inputForPrice.setAttribute('placeholder', value.toString());
+      inputForPrice.setAttribute('min', value);
+    };
+    const eventValue = event.target.value;
+    setPriceAttributes(residencePrice[eventValue]);
+
+    const newMin = +inputForPrice.getAttribute('min');
+    const currentPrice = +inputForPrice.value;
+
+    if (currentPrice < newMin && currentPrice !== 0) {
+      inputForPrice.setCustomValidity(`Уточните цену! \n Цена в категории ${ selectOptionText(residenceType) } не может быть меньше ${ newMin }`);
+      inputForPrice.reportValidity();
+    }
+  });
+
+  inputForPrice.addEventListener('input', () => {
+    const priceValue = +inputForPrice.value;
+    const minPrice = +inputForPrice.getAttribute('min');
+
+    if (priceValue < minPrice) {
+      inputForPrice.setCustomValidity(`Цена в категории ${ selectOptionText(residenceType) } не может быть меньше ${ minPrice }`);
+    } else if (priceValue > maxPrice) {
+      inputForPrice.setCustomValidity(`Цена на нашем сайте не может быть больше ${ maxPrice }`);
     } else {
       inputForPrice.setCustomValidity('');
     }
@@ -55,35 +129,13 @@ const validateAdvertForm = function() {
     inputForPrice.reportValidity();
   });
 
-  roomNumber.addEventListener('change', () => {
-    clearAttributes();
-    roomCapacity.setCustomValidity('Уточните количество гостей');
-    roomCapacity.reportValidity();
-    if (selectRoomNumber() === '1') {
-      makeOptionSelected(2);
-      disableOption(0);
-      disableOption(1);
-      disableOption(3);
-    }
-    if (selectRoomNumber() === '2') {
-      makeOptionSelected(1);
-      disableOption(0);
-      disableOption(3);
-    }
-    if (selectRoomNumber() === '3') {
-      makeOptionSelected(0);
-      disableOption(3);
-    }
-    if (selectRoomNumber() === '100') {
-      makeOptionSelected(3);
-      disableOption(0);
-      disableOption(1);
-      disableOption(2);
-    }
+  // Привязка полей "Время заезда" и "время выезда" друг к другу
+  timeIn.addEventListener('change', () => {
+    timeOut.selectedIndex = timeIn.selectedIndex;
   });
 
-  roomCapacity.addEventListener('blur', () => {
-    roomCapacity.setCustomValidity('');
+  timeOut.addEventListener('change', () => {
+    timeIn.selectedIndex = timeOut.selectedIndex;
   });
 
   // Обработка случая нажатия кнопки "Опубликовать" с пустыми обязательными полями
