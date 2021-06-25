@@ -1,8 +1,7 @@
-import { setFormDisabled, setFormEnabled } from './utils/app-state.js';
+import { setFormDisabled } from './utils/app-state.js';
 import { validateAdvertForm } from './utils/validation.js';
+import { createMap } from './map/map.js';
 
 setFormDisabled();
-setTimeout(setFormEnabled, 1000);
-
+createMap();
 validateAdvertForm();
-
