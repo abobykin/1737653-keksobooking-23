@@ -1,13 +1,7 @@
-import { getTemporaryData } from './../data/get-temporary-data.js';
-
-const TEMPRORARY_ADVERT_DATA_COUNT = 4;
-
 const cardTemplate = document.querySelector('#card').content;
 const popup = cardTemplate.querySelector('.popup');
-const popupFragment = document.createDocumentFragment();
-const dataForCards = getTemporaryData(TEMPRORARY_ADVERT_DATA_COUNT);
 
-dataForCards.forEach((advert) => {
+const createBaloonCard = function(advert) {
   const popupCard = popup.cloneNode(true);
   const title = popupCard.querySelector('.popup__title');
   const address = popupCard.querySelector('.popup__text--address');
@@ -101,7 +95,7 @@ dataForCards.forEach((advert) => {
     }
   } else { cardPhotos.style.display = 'none'; }
 
-  popupFragment.appendChild(popupCard);
-});
+  return popupCard;
+};
 
-export { popupFragment };
+export { createBaloonCard };

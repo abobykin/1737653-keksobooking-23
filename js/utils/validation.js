@@ -10,6 +10,7 @@ const roomCapacity = advertForm.querySelector('#capacity');
 const residenceType = advertForm.querySelector('#type');
 const timeIn = advertForm.querySelector('#timein');
 const timeOut = advertForm.querySelector('#timeout');
+const address = advertForm.querySelector('#address');
 const residencePrice = {
   bungalow: 0,
   flat: 1000,
@@ -149,6 +150,10 @@ const validateAdvertForm = function() {
     if (inputForPrice.validity.valueMissing) {
       inputForPrice.setCustomValidity('Уточните цену');
     }
+  });
+
+  advertForm.addEventListener('submit', () => {
+    address.removeAttribute('disabled');
   });
 };
 
