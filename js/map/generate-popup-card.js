@@ -65,8 +65,7 @@ const createBaloonCard = function(advert) {
   } else {
     checkTime.style.display = 'none';
   }
-
-  if (advert.offer.features !== [] || advert.offer.features !== undefined) {
+  if (advert.offer.features !== undefined) {
     features.textContent = advert.offer.features.join(', ');
   } else {
     features.style.display = 'none';
@@ -77,8 +76,7 @@ const createBaloonCard = function(advert) {
   } else {
     description.style.display = 'none';
   }
-
-  if (advert.offer.photos.length !== 0) {
+  if (advert.offer.photos !== undefined) {
     const createImg = function() {
       const cloneImg = cardImg.cloneNode(true);
       return cloneImg;
