@@ -1,17 +1,13 @@
 // Основной модуль для работы с картой
 import { setFormEnabled } from './../utils/app-state.js';
-import { getTemporaryData } from './../data/get-temporary-data.js';
-import { createBaloonCard } from '../utils/generate-popup-card.js';
-
-const TEMPRORARY_CARD_DATA_COUNT = 8;
-const pointsData = getTemporaryData(TEMPRORARY_CARD_DATA_COUNT);
+import { createBaloonCard } from './generate-popup-card.js';
 
 const DEFAULT_ADDRESS = {
   lat: 35.66565,
   lng: 139.76102,
 };
+
 const addressInput = document.querySelector('#address');
-addressInput.value = `${DEFAULT_ADDRESS.lat}, ${DEFAULT_ADDRESS.lng}`;
 
 const mainPinIcon = L.icon({
   iconUrl: './img/main-pin.svg',
@@ -33,11 +29,13 @@ const mainPinMarker = L.marker(
   },
 );
 
+const map = L.map('map-canvas');
+
 const createMap = () => {
-  const map = L.map('map-canvas')
-    .on('load', () => {
-      setFormEnabled();
-    })
+  map.on('load', () => {
+    setFormEnabled();
+    addressInput.value = `${DEFAULT_ADDRESS.lat}, ${DEFAULT_ADDRESS.lng}`;
+  })
     .setView(DEFAULT_ADDRESS, 13);
 
   L.tileLayer(
@@ -55,8 +53,10 @@ const createMap = () => {
     const lng = +getAddress.lng.toFixed(5);
     addressInput.value = `${lat}, ${lng}`;
   });
+};
 
-  pointsData.forEach((advert) => {
+const showAdvertsOnMap = (fetchedData) => {
+  fetchedData.forEach((advert) => {
     const {lat, lng} = advert.location;
     const ordinaryMarker = L.marker(
       {
@@ -71,8 +71,7 @@ const createMap = () => {
       .addTo(map)
       .bindPopup(createBaloonCard(advert));
   });
-
 };
 
-export { createMap };
+export { createMap, showAdvertsOnMap, map, DEFAULT_ADDRESS, mainPinMarker };
 

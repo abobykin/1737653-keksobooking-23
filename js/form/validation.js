@@ -1,4 +1,7 @@
-// Валидации всех полей формы (пока не всех :) )
+// Валидации всех полей формы
+import { sendData } from '../data/api.js';
+import { map, DEFAULT_ADDRESS, mainPinMarker } from '../map/map.js';
+
 const advertForm = document.querySelector('.ad-form');
 const inputForTitle = advertForm.querySelector('#title');
 const minTitleLength = inputForTitle.getAttribute('minLength');
@@ -43,6 +46,28 @@ const clearAttributes = function(element) {
     element.options[index].removeAttribute('disabled');
   }
 };
+
+function setMapDefault () {
+  map.closePopup();
+  map.setView(DEFAULT_ADDRESS, 13);
+  mainPinMarker.setLatLng(DEFAULT_ADDRESS);
+}
+
+function setAddressDafault () {
+  address.value = `${DEFAULT_ADDRESS.lat}, ${DEFAULT_ADDRESS.lng}`;
+}
+
+function clearForm () {
+  advertForm.reset();
+  inputForPrice.setAttribute('placeholder', '5000');
+  inputForPrice.setAttribute('min', 1000);
+  clearAttributes(roomCapacity);
+  clearAttributes(roomNumber);
+  makeOptionSelected(roomCapacity, '0');
+  makeOptionSelected(roomNumber, '2');
+  address.setAttribute('disabled', true);
+}
+
 
 const validateAdvertForm = function() {
   // валидация длины текста заголовка
@@ -152,9 +177,18 @@ const validateAdvertForm = function() {
     }
   });
 
-  advertForm.addEventListener('submit', () => {
+  advertForm.addEventListener('submit', (evt) => {
+    evt.preventDefault();
     address.removeAttribute('disabled');
+    const formData = new FormData(document.querySelector('.ad-form'));
+    sendData(formData);
+  });
+
+  advertForm.addEventListener('reset', () => {
+    clearForm();
+    setMapDefault();
+    setTimeout(() => setAddressDafault(), 0);
   });
 };
 
-export { validateAdvertForm };
+export { validateAdvertForm, clearForm, setMapDefault, setAddressDafault };
