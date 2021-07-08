@@ -4,6 +4,7 @@ import { createMap, showMarkersOnMap } from './map/map.js';
 import { getData } from './data/api.js';
 import { mapFiltering } from './map/filter.js';
 import { debounce } from './utils/debounce.js';
+import { imgUpload } from './form/file-upload.js';
 
 const RERENDER_DELAY = 500;
 
@@ -21,3 +22,4 @@ getData((adverts) => {
 });
 
 validateAdvertForm();
+imgUpload();
