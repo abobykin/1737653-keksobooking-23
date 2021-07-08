@@ -1,11 +1,14 @@
 // Основной модуль для работы с картой
 import { setFormEnabled } from './../utils/app-state.js';
 import { createBaloonCard } from './generate-popup-card.js';
+import { compareAdverts } from './filter.js';
 
 const DEFAULT_ADDRESS = {
   lat: 35.66565,
   lng: 139.76102,
 };
+
+const SHOWN_ADVERTS_COUNT = 10;
 
 const addressInput = document.querySelector('#address');
 
@@ -13,12 +16,6 @@ const mainPinIcon = L.icon({
   iconUrl: './img/main-pin.svg',
   iconSize: [52, 52],
   iconAnchor: [26, 52],
-});
-
-const ordinaryIcon = L.icon({
-  iconUrl: './img/pin.svg',
-  iconSize: [40, 40],
-  iconAnchor: [20, 40],
 });
 
 const mainPinMarker = L.marker(
@@ -30,6 +27,8 @@ const mainPinMarker = L.marker(
 );
 
 const map = L.map('map-canvas');
+
+const markerGroup = L.layerGroup().addTo(map);
 
 const createMap = () => {
   map.on('load', () => {
@@ -55,23 +54,39 @@ const createMap = () => {
   });
 };
 
-const showAdvertsOnMap = (fetchedData) => {
-  fetchedData.forEach((advert) => {
-    const {lat, lng} = advert.location;
-    const ordinaryMarker = L.marker(
-      {
-        lat,
-        lng,
-      },
-      {
-        icon: ordinaryIcon,
-      },
-    );
-    ordinaryMarker
-      .addTo(map)
-      .bindPopup(createBaloonCard(advert));
+const createMarker = (advert) => {
+  const {lat, lng} = advert.location;
+
+  const ordinaryIcon = L.icon({
+    iconUrl: './img/pin.svg',
+    iconSize: [40, 40],
+    iconAnchor: [20, 40],
   });
+
+  const ordinaryMarker = L.marker(
+    {
+      lat,
+      lng,
+    },
+    {
+      icon: ordinaryIcon,
+    },
+  );
+
+  ordinaryMarker
+    .addTo(markerGroup)
+    .bindPopup(createBaloonCard(advert));
 };
 
-export { createMap, showAdvertsOnMap, map, DEFAULT_ADDRESS, mainPinMarker };
+const showMarkersOnMap = (fetchedData) => {
+  fetchedData
+    .slice()
+    .sort(compareAdverts)
+    .slice(0, SHOWN_ADVERTS_COUNT)
+    .forEach((advert) => {
+      createMarker(advert);
+    });
+};
+
+export { createMap, showMarkersOnMap, map, DEFAULT_ADDRESS, mainPinMarker, markerGroup };
 
