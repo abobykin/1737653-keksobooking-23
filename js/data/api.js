@@ -1,14 +1,12 @@
 // Получение и отправка данных
-import { showAdvertsOnMap } from '../map/map.js';
-import { setFilterEnabled } from '../utils/app-state.js';
 import { showAlert, showSuccessMessage, showErrorMessage } from '../utils/show-alert.js';
 import { clearForm, setMapDefault, setAddressDafault } from './../form/validation.js';
 
 const SERVER_ADDRESS_GET = 'https://23.javascript.pages.academy/keksobooking/data';
 const SERVER_ADDRESS_POST = 'https://23.javascript.pages.academy/keksobooking';
-const SHOWN_ADVERTS_COUNT = 10;
 
-const getData = () => {
+
+const getData = (onSuccses) => {
   fetch(SERVER_ADDRESS_GET)
     .then((response) => {
       if (response.ok) {
@@ -18,9 +16,8 @@ const getData = () => {
     })
     .then((response) => response.json())
     .then((data) => {
-      showAdvertsOnMap(data.slice(0, SHOWN_ADVERTS_COUNT));
+      onSuccses(data);
     })
-    .then(() => setFilterEnabled())
     .catch((error) => showAlert('ошибка при  загрузке данных... ', error));
 };
 
