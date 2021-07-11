@@ -1,6 +1,6 @@
 // Получение и отправка данных
 import { showAlert, showSuccessMessage, showErrorMessage } from '../utils/show-alert.js';
-import { clearForm, setMapDefault, setAddressDafault } from './../form/validation.js';
+import { clearForms, setMapDefault, setAddressDafault } from './../form/validation.js';
 
 const SERVER_ADDRESS_GET = 'https://23.javascript.pages.academy/keksobooking/data';
 const SERVER_ADDRESS_POST = 'https://23.javascript.pages.academy/keksobooking';
@@ -37,7 +37,7 @@ const sendData = (body) => {
         showErrorMessage();
       }
     })
-    .then(() => clearForm())
+    .then(() => clearForms())
     .then(() => setMapDefault())
     .then(() => setAddressDafault())
     .catch(() => showErrorMessage());

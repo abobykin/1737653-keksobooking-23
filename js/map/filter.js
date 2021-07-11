@@ -3,6 +3,8 @@ import { setMapDefault } from './../form/validation.js';
 import { markerGroup } from './map.js';
 
 const ELIGIBLE_PRICE_DIFFERENCE = 15000;
+const ELIGIBLE_ROOM_DIFFERENCE = 3;
+const ELIGIBLE_GUEST_DIFFERENCE = 3;
 
 const mapFilters = document.querySelector('.map__filters');
 const housingType = mapFilters.querySelector('#housing-type');
@@ -117,13 +119,13 @@ const getAdvertRank = (advert) => {
   if (advert.offer.rooms === +housingRooms.value) {
     rank += 3;
   }
-  if ((advert.offer.rooms - +housingRooms.value) < 3) {
+  if ((advert.offer.rooms - +housingRooms.value) < ELIGIBLE_ROOM_DIFFERENCE) {
     rank += 2;
   }
   if (advert.offer.guests === +housingGuests.value) {
     rank += 3;
   }
-  if ((advert.offer.guests - +housingGuests.value) < 3) {
+  if ((advert.offer.guests - +housingGuests.value) < ELIGIBLE_GUEST_DIFFERENCE) {
     rank += 2;
   }
 

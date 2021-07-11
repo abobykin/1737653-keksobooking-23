@@ -1,8 +1,10 @@
 // Валидации всех полей формы
 import { sendData } from '../data/api.js';
 import { map, DEFAULT_ADDRESS, mainPinMarker } from '../map/map.js';
+import { clearImg } from './file-upload.js';
 
 const advertForm = document.querySelector('.ad-form');
+const mapFilters = document.querySelector('.map__filters');
 const inputForTitle = advertForm.querySelector('#title');
 const minTitleLength = inputForTitle.getAttribute('minLength');
 const maxTitleLength = inputForTitle.getAttribute('maxLength');
@@ -57,8 +59,11 @@ function setAddressDafault () {
   address.value = `${DEFAULT_ADDRESS.lat}, ${DEFAULT_ADDRESS.lng}`;
 }
 
-function clearForm () {
+// Очистка обеих форм (подачи объявления и фильтра карты)
+function clearForms () {
   advertForm.reset();
+  mapFilters.reset();
+  clearImg();
   inputForPrice.setAttribute('placeholder', '5000');
   inputForPrice.setAttribute('min', 1000);
   clearAttributes(roomCapacity);
@@ -123,12 +128,12 @@ const validateAdvertForm = function() {
   });
 
   // валидация цены за ночь в сязке с типом жилья
-  residenceType.addEventListener('change', (event) => {
+  residenceType.addEventListener('change', (evt) => {
     const setPriceAttributes = (value) => {
       inputForPrice.setAttribute('placeholder', value.toString());
       inputForPrice.setAttribute('min', value);
     };
-    const eventValue = event.target.value;
+    const eventValue = evt.target.value;
     setPriceAttributes(residencePrice[eventValue]);
 
     const newMin = +inputForPrice.getAttribute('min');
@@ -185,10 +190,10 @@ const validateAdvertForm = function() {
   });
 
   advertForm.addEventListener('reset', () => {
-    clearForm();
+    clearForms();
     setMapDefault();
     setTimeout(() => setAddressDafault(), 0);
   });
 };
 
-export { validateAdvertForm, clearForm, setMapDefault, setAddressDafault };
+export { validateAdvertForm, clearForms, setMapDefault, setAddressDafault };

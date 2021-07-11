@@ -1,4 +1,4 @@
-// Загрузка файлов
+// Загрузка файлов и удаление их при отправке и очистке формы
 const FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
 
 const form = document.querySelector('.ad-form');
@@ -43,4 +43,12 @@ const imgUpload = () => {
     }
   });
 };
-export { imgUpload };
+
+const clearImg = () => {
+  avatarPreview.src = 'img/muffin-grey.svg';
+  while (advertPhotoPreview.firstChild) {
+    advertPhotoPreview.removeChild(advertPhotoPreview.firstChild);
+  }
+};
+
+export { imgUpload, clearImg };
