@@ -2,9 +2,9 @@
 import { sendData } from '../data/api.js';
 import { map, DEFAULT_ADDRESS, mainPinMarker } from '../map/map.js';
 import { clearImg } from './file-upload.js';
+import { clearMapFilters } from '../map/filter.js';
 
 const advertForm = document.querySelector('.ad-form');
-const mapFilters = document.querySelector('.map__filters');
 const inputForTitle = advertForm.querySelector('#title');
 const minTitleLength = inputForTitle.getAttribute('minLength');
 const maxTitleLength = inputForTitle.getAttribute('maxLength');
@@ -62,7 +62,7 @@ function setAddressDafault () {
 // Очистка обеих форм (подачи объявления и фильтра карты)
 function clearForms () {
   advertForm.reset();
-  mapFilters.reset();
+  clearMapFilters();
   clearImg();
   inputForPrice.setAttribute('placeholder', '5000');
   inputForPrice.setAttribute('min', 1000);

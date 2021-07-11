@@ -1,6 +1,7 @@
 // Фильтры карты
 import { setMapDefault } from './../form/validation.js';
-import { markerGroup } from './map.js';
+import { markerGroup, showMarkersOnMap } from './map.js';
+import { getData } from '../data/api.js';
 
 const ELIGIBLE_PRICE_DIFFERENCE = 15000;
 const ELIGIBLE_ROOM_DIFFERENCE = 3;
@@ -146,4 +147,12 @@ const compareAdverts = (advertA, advertB) => {
   return rankB - rankA;
 };
 
-export { compareAdverts, mapFiltering };
+const clearMapFilters = () => {
+  mapFilters.reset();
+  markerGroup.clearLayers();
+  getData((adverts) => {
+    showMarkersOnMap(adverts);
+  });
+};
+
+export { compareAdverts, mapFiltering, clearMapFilters };
