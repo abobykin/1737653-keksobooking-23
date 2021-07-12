@@ -6,23 +6,23 @@ const filterForm = document.querySelector('.map__filters');
 const filterSelects = filterForm.querySelectorAll('select');
 const filterCheckboxes = filterForm.querySelector('fieldset');
 
-const setFormDisabled = function() {
+const setFormDisabled = () => {
   advertForm.classList.add('ad-form--disabled');
   fieldsets.forEach((item) => item.disabled = true);
 };
 
-const setFormEnabled = function() {
+const setFormEnabled = () => {
   advertForm.classList.remove('ad-form--disabled');
   fieldsets.forEach((item) => item.removeAttribute('disabled'));
 };
 
-const setFilterDisabled = function() {
+const setFilterDisabled = () => {
   filterForm.classList.add('map__filters--disabled');
   filterSelects.forEach((item) => item.disabled = true);
   filterCheckboxes.setAttribute('disabled', true);
 };
 
-const setFilterEnabled = function() {
+const setFilterEnabled = () => {
   filterForm.classList.remove('map__filters--disabled');
   filterSelects.forEach((item) => item.removeAttribute('disabled'));
   filterCheckboxes.removeAttribute('disabled');

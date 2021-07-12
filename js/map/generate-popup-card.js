@@ -1,7 +1,7 @@
 const cardTemplate = document.querySelector('#card').content;
 const popup = cardTemplate.querySelector('.popup');
 
-const createBaloonCard = function(advert) {
+const createBaloonCard = (advert) => {
   const popupCard = popup.cloneNode(true);
   const title = popupCard.querySelector('.popup__title');
   const address = popupCard.querySelector('.popup__text--address');
@@ -77,11 +77,11 @@ const createBaloonCard = function(advert) {
     description.style.display = 'none';
   }
   if (advert.offer.photos !== undefined) {
-    const createImg = function() {
+    const createImg = () => {
       const cloneImg = cardImg.cloneNode(true);
       return cloneImg;
     };
-    const addImgSource = function(url) {
+    const addImgSource = (url) => {
       const img = createImg();
       img.src = url;
       return img;

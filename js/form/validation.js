@@ -24,43 +24,43 @@ const residencePrice = {
   palace: 10000,
 };
 
-const selectOption = function (element) {
+const selectOption = (element) => {
   const choosenOption = element.options[element.selectedIndex].value;
   return choosenOption;
 };
 
-const selectOptionText = function (element) {
+const selectOptionText = (element) => {
   const choosenOption = element.options[element.selectedIndex].textContent;
   return choosenOption;
 };
 
-const disableOption = function (index) {
+const disableOption = (index) => {
   roomCapacity.options[index].setAttribute('disabled', '');
 };
 
-const makeOptionSelected = function (element, index) {
+const makeOptionSelected = (element, index) => {
   element.options[index].setAttribute('selected', '');
 };
 
-const clearAttributes = function(element) {
+const clearAttributes = (element) => {
   for (let index = 0; index < element.options.length; index++) {
     element.options[index].removeAttribute('selected');
     element.options[index].removeAttribute('disabled');
   }
 };
 
-function setMapDefault () {
+const setMapDefault = () => {
   map.closePopup();
   map.setView(DEFAULT_ADDRESS, 13);
   mainPinMarker.setLatLng(DEFAULT_ADDRESS);
-}
+};
 
-function setAddressDafault () {
+const setAddressDafault = () => {
   address.value = `${DEFAULT_ADDRESS.lat}, ${DEFAULT_ADDRESS.lng}`;
-}
+};
 
 // Очистка обеих форм (подачи объявления и фильтра карты)
-function clearForms () {
+const clearForms = () => {
   advertForm.reset();
   clearMapFilters();
   clearImg();
@@ -71,10 +71,10 @@ function clearForms () {
   makeOptionSelected(roomCapacity, '0');
   makeOptionSelected(roomNumber, '2');
   address.setAttribute('disabled', true);
-}
+};
 
 
-const validateAdvertForm = function() {
+const validateAdvertForm = () => {
   // валидация длины текста заголовка
   inputForTitle.addEventListener('input', () => {
     const valueLength = inputForTitle.value.length;

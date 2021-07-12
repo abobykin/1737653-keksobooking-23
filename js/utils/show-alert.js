@@ -1,4 +1,3 @@
-/* eslint-disable no-use-before-define */
 const ALERT_SHOW_TIME = 5000;
 
 const successPopup = document.querySelector('#success').content;
@@ -21,6 +20,11 @@ const onScreenClick = (evt) => {
   closeMessage();
 };
 
+// использовано Function Declaration
+// Function declaration hoisting
+// Function declarations in JavaScript are hoisted to the top of the enclosing function or global scope.
+// You can use the function before you declared it:
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function
 function closeMessage () {
   successMessage.remove();
   errorMessage.remove();
