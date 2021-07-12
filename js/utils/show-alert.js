@@ -11,12 +11,14 @@ const isEscEvent = (evt) => evt.key === 'Escape' || evt.key === 'Esc';
 const onPopupEscKeydown = (evt) => {
   if (isEscEvent(evt)) {
     evt.preventDefault();
+    // eslint-disable-next-line no-use-before-define
     closeMessage();
   }
 };
 
 const onScreenClick = (evt) => {
   evt.preventDefault();
+  // eslint-disable-next-line no-use-before-define
   closeMessage();
 };
 
