@@ -129,6 +129,7 @@ const validateAdvertForm = () => {
 
   // валидация цены за ночь в сязке с типом жилья
   residenceType.addEventListener('change', (evt) => {
+    inputForPrice.setCustomValidity('');
     const setPriceAttributes = (value) => {
       inputForPrice.setAttribute('placeholder', value.toString());
       inputForPrice.setAttribute('min', value);

@@ -3,10 +3,6 @@ import { setMapDefault } from './../form/validation.js';
 import { markerGroup, showMarkersOnMap } from './map.js';
 import { getData } from '../data/api.js';
 
-const ELIGIBLE_PRICE_DIFFERENCE = 15000;
-const ELIGIBLE_ROOM_DIFFERENCE = 3;
-const ELIGIBLE_GUEST_DIFFERENCE = 3;
-
 const mapFilters = document.querySelector('.map__filters');
 const housingType = mapFilters.querySelector('#housing-type');
 const housingPrice = mapFilters.querySelector('#housing-price');
@@ -108,31 +104,22 @@ const getAdvertRank = (advert) => {
   let rank = 0;
 
   if (advert.offer.type === housingType.value) {
-    rank += 3;
+    rank += 2;
   }
   if (advert.offer.price > residencePriceRange.min &&
     advert.offer.price < residencePriceRange.max ) {
-    rank += 3;
-  }
-  if ((advert.offer.price - residencePriceRange.max) < ELIGIBLE_PRICE_DIFFERENCE ) {
     rank += 2;
   }
   if (advert.offer.rooms === +housingRooms.value) {
-    rank += 3;
-  }
-  if ((advert.offer.rooms - +housingRooms.value) < ELIGIBLE_ROOM_DIFFERENCE) {
     rank += 2;
   }
   if (advert.offer.guests === +housingGuests.value) {
-    rank += 3;
-  }
-  if ((advert.offer.guests - +housingGuests.value) < ELIGIBLE_GUEST_DIFFERENCE) {
     rank += 2;
   }
 
   const comareResult = compareFeatures(features, advert.offer.features);
   if (comareResult && features.length === advert.offer.features.length) {
-    rank += 3;
+    rank += 2;
   }
   if (comareResult) {
     rank +=1;
@@ -144,7 +131,8 @@ const getAdvertRank = (advert) => {
 const compareAdverts = (advertA, advertB) => {
   const rankA = getAdvertRank(advertA);
   const rankB = getAdvertRank(advertB);
-  return rankB - rankA;
+  const result = rankB - rankA;
+  return result;
 };
 
 const clearMapFilters = () => {
