@@ -64,7 +64,7 @@ const clearForms = () => {
   advertForm.reset();
   clearMapFilters();
   clearImg();
-  inputForPrice.setAttribute('placeholder', '5000');
+  inputForPrice.setAttribute('placeholder', '1000');
   inputForPrice.setAttribute('min', 1000);
   clearAttributes(roomCapacity);
   clearAttributes(roomNumber);

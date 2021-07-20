@@ -1,6 +1,6 @@
 // Фильтры карты
 import { setMapDefault } from './../form/validation.js';
-import { markerGroup, showMarkersOnMap } from './map.js';
+import { markerGroup, showMarkersOnMap, createMarker, SHOWN_ADVERTS_COUNT } from './map.js';
 import { getData } from '../data/api.js';
 
 const mapFilters = document.querySelector('.map__filters');
@@ -31,41 +31,49 @@ const residencePriceCollection = {
 
 let residencePriceRange = {};
 let features = [];
+let filtersCount = 0;
 
-const onHousingTypeClick = (cb) => {
-  housingType.addEventListener('change', (evt) => {
-    housingType.value = evt.target.value;
+const addDisposableListener = (element) => {
+  element.addEventListener('change', () => {
+    filtersCount += 1;
+  }, {once : true});
+};
+
+const addMainListener = (element, cb) => {
+  element.addEventListener('change', (evt) => {
+    if (element === housingPrice) {
+      residencePriceRange = residencePriceCollection[evt.target.value];
+    } else {
+      element.value = evt.target.value;
+    }
     markerGroup.clearLayers();
     setMapDefault();
     cb();
+    if (evt.target.value === 'any') {
+      filtersCount -= 1;
+      addDisposableListener(element);
+    }
   });
+};
+
+const onHousingTypeClick = (cb) => {
+  addDisposableListener(housingType);
+  addMainListener(housingType, cb);
 };
 
 const onHousingPriceClick = (cb) => {
-  housingPrice.addEventListener('change', (evt) => {
-    residencePriceRange = residencePriceCollection[evt.target.value];
-    markerGroup.clearLayers();
-    setMapDefault();
-    cb();
-  });
+  addDisposableListener(housingPrice);
+  addMainListener(housingPrice, cb);
 };
 
 const onHousingRoomsClick = (cb) => {
-  housingRooms.addEventListener('change', (evt) => {
-    housingRooms.value = evt.target.value;
-    markerGroup.clearLayers();
-    setMapDefault();
-    cb();
-  });
+  addDisposableListener(housingRooms);
+  addMainListener(housingRooms, cb);
 };
 
 const onHousingGuestsClick = (cb) => {
-  housingGuests.addEventListener('change', (evt) => {
-    housingGuests.value = evt.target.value;
-    markerGroup.clearLayers();
-    setMapDefault();
-    cb();
-  });
+  addDisposableListener(housingGuests);
+  addMainListener(housingGuests, cb);
 };
 
 
@@ -74,8 +82,10 @@ const onHousingFeaturesClick = (cb) => {
     const featureStatus = evt.target.checked;
     if (featureStatus) {
       features.push(evt.target.value);
+      filtersCount += 1;
     } else {
       features = features.filter((item) => item !== evt.target.value);
+      filtersCount -= 1;
     }
     markerGroup.clearLayers();
     setMapDefault();
@@ -93,10 +103,14 @@ const mapFiltering = (cb) => {
 
 const compareFeatures = (arrayOne, arrayTwo) => {
   if (arrayTwo) {
-    const result = arrayTwo.every((value, index) => value === arrayOne[index]);
+    const result = arrayTwo.some((value) => arrayOne.indexOf(value) >= 0);
     return result;
-  } else {
-    return false;
+  }
+};
+const compareAllFeatures = (arrayOne, arrayTwo) => {
+  if (arrayTwo) {
+    const result = arrayTwo.some((value) => arrayOne.includes(value));
+    return result;
   }
 };
 
@@ -104,35 +118,46 @@ const getAdvertRank = (advert) => {
   let rank = 0;
 
   if (advert.offer.type === housingType.value) {
-    rank += 2;
+    rank += 1;
   }
   if (advert.offer.price > residencePriceRange.min &&
     advert.offer.price < residencePriceRange.max ) {
-    rank += 2;
+    rank += 1;
   }
   if (advert.offer.rooms === +housingRooms.value) {
-    rank += 2;
+    rank += 1;
   }
   if (advert.offer.guests === +housingGuests.value) {
-    rank += 2;
+    rank += 1;
   }
-
-  const comareResult = compareFeatures(features, advert.offer.features);
-  if (comareResult && features.length === advert.offer.features.length) {
-    rank += 2;
+  if (compareFeatures(features, advert.offer.features)) {
+    rank += 1;
   }
-  if (comareResult) {
-    rank +=1;
+  if (compareAllFeatures(features, advert.offer.features)) {
+    rank += 1;
   }
 
   return rank;
 };
 
-const compareAdverts = (advertA, advertB) => {
-  const rankA = getAdvertRank(advertA);
-  const rankB = getAdvertRank(advertB);
-  const result = rankB - rankA;
-  return result;
+const compareAdvertsRank = (advert) => {
+  const ranked = getAdvertRank(advert);
+  if (ranked >= filtersCount) {
+    return advert;
+  }
+};
+
+const showFilteredMarkersOnMap = (fetchedData) => {
+  fetchedData
+    .slice()
+    .map(compareAdvertsRank)
+    .sort()
+    .slice(0, SHOWN_ADVERTS_COUNT)
+    .forEach((advert) => {
+      if (advert) {
+        createMarker(advert);
+      }
+    });
 };
 
 const clearMapFilters = () => {
@@ -141,6 +166,7 @@ const clearMapFilters = () => {
   getData((adverts) => {
     showMarkersOnMap(adverts);
   });
+  filtersCount = 0;
 };
 
-export { compareAdverts, mapFiltering, clearMapFilters };
+export { mapFiltering, clearMapFilters, showFilteredMarkersOnMap };

@@ -5,7 +5,6 @@ import { clearForms, setMapDefault, setAddressDafault } from './../form/validati
 const SERVER_ADDRESS_GET = 'https://23.javascript.pages.academy/keksobooking/data';
 const SERVER_ADDRESS_POST = 'https://23.javascript.pages.academy/keksobooking';
 
-
 const getData = (onSuccses) => {
   fetch(SERVER_ADDRESS_GET)
     .then((response) => {
@@ -21,7 +20,6 @@ const getData = (onSuccses) => {
     .catch((error) => showAlert('ошибка при  загрузке данных... ', error));
 };
 
-
 const sendData = (body) => {
   fetch(
     SERVER_ADDRESS_POST,
@@ -35,10 +33,11 @@ const sendData = (body) => {
         showSuccessMessage();
       } else {
         showErrorMessage();
+        throw new Error(`${response.status} — ${response.statusText}`);
       }
     })
-    .then(() => clearForms())
     .then(() => setMapDefault())
+    .then(() => clearForms())
     .then(() => setAddressDafault())
     .catch(() => showErrorMessage());
 };

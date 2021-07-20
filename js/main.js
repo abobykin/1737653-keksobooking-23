@@ -2,7 +2,7 @@ import { setFormDisabled, setFilterDisabled, setFilterEnabled } from './utils/ap
 import { validateAdvertForm } from './form/validation.js';
 import { createMap, showMarkersOnMap } from './map/map.js';
 import { getData } from './data/api.js';
-import { mapFiltering } from './map/filter.js';
+import { mapFiltering, showFilteredMarkersOnMap } from './map/filter.js';
 import { debounce } from './utils/debounce.js';
 import { imgUpload } from './form/file-upload.js';
 
@@ -16,7 +16,7 @@ getData((adverts) => {
   showMarkersOnMap(adverts);
   setFilterEnabled();
   mapFiltering(debounce(
-    () => showMarkersOnMap(adverts),
+    () => showFilteredMarkersOnMap(adverts),
     RERENDER_DELAY,
   ));
 });

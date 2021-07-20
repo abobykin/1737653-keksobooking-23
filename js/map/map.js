@@ -1,7 +1,6 @@
 // Основной модуль для работы с картой
 import { setFormEnabled } from './../utils/app-state.js';
 import { createBaloonCard } from './generate-popup-card.js';
-import { compareAdverts } from './filter.js';
 
 const DEFAULT_ADDRESS = {
   lat: 35.66565,
@@ -80,13 +79,11 @@ const createMarker = (advert) => {
 
 const showMarkersOnMap = (fetchedData) => {
   fetchedData
-    .slice()
-    .sort(compareAdverts)
     .slice(0, SHOWN_ADVERTS_COUNT)
     .forEach((advert) => {
       createMarker(advert);
     });
 };
 
-export { createMap, showMarkersOnMap, map, DEFAULT_ADDRESS, mainPinMarker, markerGroup };
+export { createMap, showMarkersOnMap, map, DEFAULT_ADDRESS, mainPinMarker, markerGroup, createMarker, SHOWN_ADVERTS_COUNT };
 
