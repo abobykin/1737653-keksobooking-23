@@ -8,7 +8,7 @@ const filterCheckboxes = filterForm.querySelector('fieldset');
 
 const setFormDisabled = () => {
   advertForm.classList.add('ad-form--disabled');
-  fieldsets.forEach((item) => item.disabled = true);
+  fieldsets.forEach((item) => {item.disabled = true;});
 };
 
 const setFormEnabled = () => {
@@ -18,7 +18,7 @@ const setFormEnabled = () => {
 
 const setFilterDisabled = () => {
   filterForm.classList.add('map__filters--disabled');
-  filterSelects.forEach((item) => item.disabled = true);
+  filterSelects.forEach((item) => {item.disabled = true;});
   filterCheckboxes.setAttribute('disabled', true);
 };
 

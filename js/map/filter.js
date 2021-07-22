@@ -1,6 +1,6 @@
 // Фильтры карты
 import { setMapDefault } from './../form/validation.js';
-import { markerGroup, showMarkersOnMap, createMarker, SHOWN_ADVERTS_COUNT } from './map.js';
+import { markerGroup, createMarker, SHOWN_ADVERTS_COUNT } from './map.js';
 import { getData } from '../data/api.js';
 
 const mapFilters = document.querySelector('.map__filters');
@@ -12,8 +12,8 @@ const housingFeatures = mapFilters.querySelector('#housing-features');
 
 const residencePriceCollection = {
   any: {
-    min: 0,
-    max: 1000000,
+    min: 1000000,
+    max: 0,
   },
   low: {
     min: 0,
@@ -29,13 +29,21 @@ const residencePriceCollection = {
   },
 };
 
+const disposableListenersCollection = {
+  type: true,
+  price: true,
+  rooms: true,
+  guests: true,
+};
+
 let residencePriceRange = {};
 let features = [];
 let filtersCount = 0;
 
-const addDisposableListener = (element) => {
+const addDisposableListener = (element, key) => {
   element.addEventListener('change', () => {
     filtersCount += 1;
+    disposableListenersCollection[key] = false;
   }, {once : true});
 };
 
@@ -57,22 +65,22 @@ const addMainListener = (element, cb) => {
 };
 
 const onHousingTypeClick = (cb) => {
-  addDisposableListener(housingType);
+  addDisposableListener(housingType, 'type');
   addMainListener(housingType, cb);
 };
 
 const onHousingPriceClick = (cb) => {
-  addDisposableListener(housingPrice);
+  addDisposableListener(housingPrice, 'price');
   addMainListener(housingPrice, cb);
 };
 
 const onHousingRoomsClick = (cb) => {
-  addDisposableListener(housingRooms);
+  addDisposableListener(housingRooms, 'rooms');
   addMainListener(housingRooms, cb);
 };
 
 const onHousingGuestsClick = (cb) => {
-  addDisposableListener(housingGuests);
+  addDisposableListener(housingGuests, 'guests');
   addMainListener(housingGuests, cb);
 };
 
@@ -101,16 +109,13 @@ const mapFiltering = (cb) => {
   onHousingFeaturesClick(cb);
 };
 
-const compareFeatures = (arrayOne, arrayTwo) => {
-  if (arrayTwo) {
-    const result = arrayTwo.some((value) => arrayOne.indexOf(value) >= 0);
-    return result;
-  }
-};
-const compareAllFeatures = (arrayOne, arrayTwo) => {
-  if (arrayTwo) {
-    const result = arrayTwo.some((value) => arrayOne.includes(value));
-    return result;
+const compareAllFeatures = (chosenFeatures, advertFeatures) => {
+  if (advertFeatures) {
+    const comparedResults = [];
+    chosenFeatures.forEach((feature) => {
+      comparedResults.push(advertFeatures.includes(feature));
+    });
+    return comparedResults.every((result) => result);
   }
 };
 
@@ -120,9 +125,11 @@ const getAdvertRank = (advert) => {
   if (advert.offer.type === housingType.value) {
     rank += 1;
   }
-  if (advert.offer.price > residencePriceRange.min &&
-    advert.offer.price < residencePriceRange.max ) {
-    rank += 1;
+  if (housingPrice.value !== 'any') {
+    if (advert.offer.price > residencePriceRange.min &&
+      advert.offer.price < residencePriceRange.max ) {
+      rank += 1;
+    }
   }
   if (advert.offer.rooms === +housingRooms.value) {
     rank += 1;
@@ -130,13 +137,10 @@ const getAdvertRank = (advert) => {
   if (advert.offer.guests === +housingGuests.value) {
     rank += 1;
   }
-  if (compareFeatures(features, advert.offer.features)) {
-    rank += 1;
+  if (features.length > 0 && compareAllFeatures(features, advert.offer.features)) {
+    const factor = features.length;
+    rank += factor;
   }
-  if (compareAllFeatures(features, advert.offer.features)) {
-    rank += 1;
-  }
-
   return rank;
 };
 
@@ -160,11 +164,36 @@ const showFilteredMarkersOnMap = (fetchedData) => {
     });
 };
 
+const resetValues = () => {
+  housingType.value = 'any';
+  housingPrice.value = 'any';
+  housingRooms.value = 'any';
+  housingGuests.value = 'any';
+  features = [];
+};
+
+const resetDisposableListeners = () => {
+  if (disposableListenersCollection.type === false) {
+    addDisposableListener(housingType);
+  }
+  if (disposableListenersCollection.price === false) {
+    addDisposableListener(housingPrice);
+  }
+  if (disposableListenersCollection.rooms === false) {
+    addDisposableListener(housingRooms);
+  }
+  if (disposableListenersCollection.guests === false) {
+    addDisposableListener(housingGuests);
+  }
+};
+
 const clearMapFilters = () => {
   mapFilters.reset();
   markerGroup.clearLayers();
+  resetValues();
+  resetDisposableListeners();
   getData((adverts) => {
-    showMarkersOnMap(adverts);
+    showFilteredMarkersOnMap(adverts);
   });
   filtersCount = 0;
 };
